@@ -213,7 +213,7 @@ know that this has succeeded?
 - Support typed-list in device attribute values.
 - Extends(redefine) the semantics of `ResourceClaim`'s `constraints[].{matchAttribute,distinctAttribute}` fields as below so that it can work with list-type attribute values
   - `matchAttribute`: it is defined as non-empty intersection
-  - `distinctAttribute`: it is defined as empty intersection
+  - `distinctAttribute`: it is defined as pairwise disjoint
   - note: scalar values are treated as single-element lists
 - Keep _monotonicity_ in constraint.
   - Currently `Allocator`'s algorithm assumes [_monotonic_ constraints](https://github.com/kubernetes/kubernetes/blob/v1.34.2/staging/src/k8s.io/dynamic-resource-allocation/structured/internal/experimental/allocator_experimental.go#L274-L276) only. Monotonic means that once a constraint returns false, adding more devices will never cause it to return true. This allows to bound the computational complexity for searching device combinations which satisfies the specified constraints. This KEP focuses to keep monotonicity of `matchAttribute/distinctAttribute` semantics.
@@ -252,7 +252,7 @@ The proposal has mainly two parts:
     - This KEP: it matches when the intersection (as a set) of all the list values among candidate devices is non-empty(i.e. `(∩ v_k != ∅)`)
   - For `DistinctAttribute`
     - Previously: it matches when all the attribute values among candidate devices are distinct (i.e. `∀i,j, s.t. i != j, v_i != v_j`)
-    - This KEP: it matches when the intersection (as a set) of all the list values among candidate devices is empty (i.e. `∩ v_k = ∅`)
+    - This KEP: it matches when all the list values among candidate devices are pairwise disjoint (i.e. `∀i,j, s.t. i != j, v_j ∩ v_k = ∅`)
 
 ### API Changes
 
